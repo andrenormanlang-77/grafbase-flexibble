@@ -27,8 +27,8 @@ const Project = g.type('Project', {
 
 // Define JWT authentication provider
 const provider = auth.JWT({
-  issuer: g.env('ISSUER_URL'),
-  secret: g.env('JWT_SECRET'),
+  issuer: 'https://grafbase.io',
+  secret: g.env('NEXTAUTH_SECRET'),
 });
 
 // Export the configuration
