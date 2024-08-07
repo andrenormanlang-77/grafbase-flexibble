@@ -1,45 +1,43 @@
-import { auth, config, graph } from '@grafbase/sdk';
+import { graph, auth, config } from '@grafbase/sdk';
 
-// Define the standalone graph using GraphQL SDL
-const g = graph.Standalone({
-  typeDefs: /* GraphQL */ `
-    type User {
-      id: ID!
-      name: String! @length(min: 2, max: 20)
-      email: String! @unique
-      avatarUrl: String!
-      description: String
-      githubUrl: String
-      linkedinUrl: String
-      projects: [Project]
-    }
+// Define the standalone graph
+const g = graph.Standalone();
 
-    type Project {
-      id: ID!
-      title: String! @length(min: 3)
-      description: String!
-      image: String!
-      liveSiteUrl: String!
-      githubUrl: String!
-      category: String
-      createdBy: User
-    }
-  `,
-});
+// Define the User model
+const User = g.type('User', {
+  name: g.string(),
+  email: g.string(),
+  avatarUrl: g.url(),
+  description: g.string().optional(),
+  githubUrl: g.url().optional(),
+  linkedinUrl: g.url().optional()
+})
 
-// Export the configuration
 
-// Define JWT authentication
-const jwt = auth.JWT({
-  issuer: 'grafbase',
-  secret: g.env('NEXTAUTH_SECRET'),
+
+// Define the Project model
+const Project = g.type('Project', {
+  title: g.string(),
+  description: g.string(),
+  image: g.url(),
+  liveSiteUrl: g.url(),
+  githubUrl: g.url(),
+  category: g.string(),
+})
+
+// Define JWT authentication provider
+const provider = auth.JWT({
+  issuer: g.env('ISSUER_URL'),
+  secret: g.env('JWT_SECRET'),
 });
 
 // Export the configuration
 export default config({
   graph: g,
   auth: {
-    providers: [jwt],
-    rules: (rules) => rules.private(),
+    providers: [provider],
+    rules: (rules) => {
+      rules.private();
+    },
   },
 });
