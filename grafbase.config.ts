@@ -24,11 +24,6 @@ const g = graph.Standalone({
       category: String
       createdBy: User
     }
-
-    extend type Query {
-      invoiceByNumber(invoiceNumber: String!): [Invoice!]!
-        @resolver(name: "invoice/byNumber")
-    }
   `,
 });
 
