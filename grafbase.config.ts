@@ -1,6 +1,8 @@
 import { g, auth, config } from '@grafbase/sdk'
 import ts from 'typescript'
 
+
+
 // @ts-ignore
 const User = g.model('User', {
   name: g.string().length({ min:2, max:20}),
@@ -32,7 +34,7 @@ const Project = g.model('Project', {
 
 const jwt = auth.JWT({
   issuer: 'grafbase',
-  secret:  g.env('NEXTAUTH_SECRET')
+  secret:  g.env('CE7UzcTxqdRRSkqJOf6zCd3d8fhNZo3FJFqlY8yhN5A=')
 })
 
 export default config({
