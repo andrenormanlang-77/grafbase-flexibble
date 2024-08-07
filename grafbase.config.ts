@@ -5,7 +5,7 @@ const g = graph.Standalone();
 
 // Define the User model
 // @ts-ignore
-const User = g.model({
+const User = g.type('User', {
   name: g.string(),
   email: g.email(),
   description: g.string(),
@@ -13,27 +13,24 @@ const User = g.model({
   liveSiteUrl: g.url(),
   githubUrl: g.url(),
   category: g.string(),
+  // @ts-ignore
+  projects: g.ref(Project).list().optional(),
 });
 
 // Define the relationships
 // @ts-ignore
-const Project = g.model({
+const Project = g.type('Project', {
   title: g.string(),
   description: g.string(),
   image: g.url(),
   liveSiteUrl: g.url(),
   githubUrl: g.url(),
   category: g.string(),
-});
-
-Project.field({
   createdBy: g.ref(User),
 });
 
+
 // Define authentication rules
-User.field({
-  projects: g.ref(Project).list().optional(),
-});
 
 
 // @ts-ignore
@@ -41,7 +38,6 @@ User.field({
 User.auth((rules) => {
   rules.public().read();
 });
-
 
 
 // @ts-ignore
