@@ -29,13 +29,13 @@ const Project = g.type("Project", {
 // Define the relationships
 // @ts-ignore
 
-User.fields({
+User.field({
   projects: g.ref(Project).list().optional(),
 });
 
 // @ts-ignore
 
-Project.fields({
+Project.field({
   createdBy: g.ref(User),
 });
 
