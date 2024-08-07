@@ -33,7 +33,7 @@ const provider = auth.JWT({
 
 // Export the configuration
 export default config({
-  schema: g,
+  graph: g,
   auth: {
     providers: [provider],
     rules: (rules) => {
