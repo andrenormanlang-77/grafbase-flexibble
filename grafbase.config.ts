@@ -1,46 +1,50 @@
-import { g, auth, config } from '@grafbase/sdk'
-import ts from 'typescript'
+import { auth, config, graph } from '@grafbase/sdk';
 
+// Define the standalone graph using GraphQL SDL
+const g = graph.Standalone({
+  typeDefs: /* GraphQL */ `
+    type User {
+      id: ID!
+      name: String! @length(min: 2, max: 20)
+      email: String! @unique
+      avatarUrl: String!
+      description: String
+      githubUrl: String
+      linkedinUrl: String
+      projects: [Project]
+    }
 
+    type Project {
+      id: ID!
+      title: String! @length(min: 3)
+      description: String!
+      image: String!
+      liveSiteUrl: String!
+      githubUrl: String!
+      category: String
+      createdBy: User
+    }
 
-// @ts-ignore
-const User = g.model('User', {
-  name: g.string().length({ min:2, max:20}),
-  email: g.string().unique(),
-  avatarUrl: g.url(),
-  description: g.string().optional(),
-  githubUrl: g.url().optional(),
-  linkedinUrl: g.url().optional(),
-  // @ts-ignore
-  projects: g.relation(() => Project).list().optional(),
-}).auth((rules) => {
-  rules.public().read()
-})
+    extend type Query {
+      invoiceByNumber(invoiceNumber: String!): [Invoice!]!
+        @resolver(name: "invoice/byNumber")
+    }
+  `,
+});
 
-// @ts-ignore
-const Project = g.model('Project', {
-  title: g.string().length({ min: 3 }),
-  description: g.string(),
-  image: g.url(),
-  liveSiteUrl: g.url(),
-  githubUrl: g.url(),
-  category: g.string().search(),
-  //@ts-ignore
-  createdBy: g.relation(() => User),
-}).auth((rules) => {
-  rules.public().read()
-  rules.private().create().delete().update()
-})
+// Export the configuration
 
+// Define JWT authentication
 const jwt = auth.JWT({
   issuer: 'grafbase',
-  secret:  g.env('NEXTAUTH_SECRET')
-})
+  secret: g.env('NEXTAUTH_SECRET'),
+});
 
+// Export the configuration
 export default config({
-  schema: g,
+  graph: g,
   auth: {
     providers: [jwt],
-    rules: (rules) => rules.private()
+    rules: (rules) => rules.private(),
   },
-})
+});
