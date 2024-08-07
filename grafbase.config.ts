@@ -1,4 +1,5 @@
 import { g, auth, config } from '@grafbase/sdk'
+import ts from 'typescript'
 
 // @ts-ignore
 const User = g.model('User', {
@@ -22,6 +23,7 @@ const Project = g.model('Project', {
   liveSiteUrl: g.url(),
   githubUrl: g.url(),
   category: g.string().search(),
+  //@ts-ignore
   createdBy: g.relation(() => User),
 }).auth((rules) => {
   rules.public().read()
